@@ -8,12 +8,23 @@ class SensorsChart {
         // useful with live data
         events: {
             load: function() {
+              const interval = 3000;
+              const offset = interval / 2;
               setInterval(() => {
-                this.series.forEach((serie) => serie.addPoint(
+                this.series[0].addPoint(
                   [(new Date()).getTime(), Math.round(Math.random() * 1000) / 100],
-                  true, true, true
-                ));
-              }, 3000);
+                  true, true
+                )
+              }, interval);
+
+              setTimeout(() => {
+                setInterval(() => {
+                  this.series[1].addPoint(
+                    [(new Date()).getTime(), Math.round(Math.random() * 1000) / 100],
+                    true, true
+                  )
+                }, interval);
+              }, offset)
             }
         }
       },
