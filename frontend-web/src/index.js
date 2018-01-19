@@ -28,10 +28,12 @@ const defaultBuilding = 0;
 const buildingSelector = new BuildingSelector('#building-selector');
 buildingSelector.addOptions(buildings, defaultBuilding);
 
-let sensorsChart = new SensorsChart(buildings[defaultBuilding]);
+let sensorsChartHumidity = new SensorsChart('sensors-chart-humidity', buildings[defaultBuilding], 'humidity');
+let sensorsChartTemperature = new SensorsChart('sensors-chart-temperature', buildings[defaultBuilding], 'temperature');
 buildingSelector.addChangeListener((event) => {
   // event.detail is the actual MDCSelect object
-  sensorsChart = new SensorsChart(buildings[event.detail.selectedIndex])
+  sensorsChartHumidity = new SensorsChart('sensors-chart-humidity', buildings[event.detail.selectedIndex], 'humidity');
+  sensorsChartTemperature = new SensorsChart('sensors-chart-temperature', buildings[event.detail.selectedIndex], 'temperature');
 });
 
 const eventsList = new EventsList('#events-list');

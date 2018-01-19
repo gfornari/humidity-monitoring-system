@@ -1,8 +1,8 @@
 import Highcharts from 'highcharts';
 
 class SensorsChart {
-  constructor(buildingId) {
-    this.chart = Highcharts.chart('sensors-chart', {
+  constructor(selector, buildingId, metric) {
+    this.chart = Highcharts.chart(selector, {
       chart: {
         defaultSeriesType: 'spline',
         // useful with live data
@@ -29,7 +29,7 @@ class SensorsChart {
         }
       },
       title: {
-        text: `Sensors measurements of bulding ${buildingId}`,
+        text: `${metric} measurements of bulding ${buildingId}`,
       },
       xAxis: {
         type: 'datetime',
@@ -40,7 +40,7 @@ class SensorsChart {
         minPadding: 0.2,
         maxPadding: 0.2,
         title: {
-          text: 'Humidity',
+          text: metric,
           margin: 80
         }
       },
