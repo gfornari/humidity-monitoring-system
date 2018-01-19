@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Welcome to Firebase Hosting</title>
+  <title>Humidity and temperature monitoring</title>
+
+  <!-- reset CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
 
   <!-- load Material Components Web -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
@@ -16,11 +19,25 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header class="mdc-toolbar">
+    <div class="mdc-toolbar__row">
+      <section class="mdc-toolbar__section">
+        <span class="mdc-toolbar__title">Humidity and temperature monitoring</span>
+      </section>
+    </div>
+  </header>
   <main>
     <div id="building-selector"></div>
-    <div id="sensors-chart"></div>
-    <h1 class="mdc-typography--display1">Events</h1>
-    <div id="events-list"></div>
+    <div class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6-desktop mdc-layout-grid__cell--span-8-tablet"><div id="sensors-chart-humidity"></div></div>
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6-desktop mdc-layout-grid__cell--span-8-tablet"><div id="sensors-chart-temperature"></div></div>
+      </div>
+    </div>
+    <section class="events">
+      <h1 class="mdc-typography--display1">Events</h1>
+      <div id="events-list"></div>
+    </section>
   </main>
 
   <p id="load">Firebase SDK Loading&hellip;</p>
