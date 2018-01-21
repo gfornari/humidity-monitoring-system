@@ -19,6 +19,10 @@ class Firebase {
     // TODO seems it is synchronous. Can we make it async?
     this.app = firebase.initializeApp(config);
   }
+
+  getDB() {
+    return this.app.firestore();
+  }
 }
 
 export default Firebase;

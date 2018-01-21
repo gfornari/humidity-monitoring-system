@@ -16,9 +16,21 @@ let config = {
 };
 
 try {
-  let app = new Firebase().app;
+  let firebase = new Firebase();
+  let app = firebase.app;
   let features = ['auth', 'database', 'messaging', 'storage', 'firestore'].filter(feature => typeof app[feature] === 'function');
   document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+
+  console.log(app)
+
+  let db = firebase.getDB();
+  // db.collection('buildings').doc('cappella-borgoricco').collection('measurements').add({
+  //   roomId: 'room0',
+  //   sensorId: 'sensor0',
+  //   timestamp: moment().toDate(),
+  //   humidity: 67.8,
+  //   temperature: 15,
+  // })
 } catch (e) {
   console.error(e);
   document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
