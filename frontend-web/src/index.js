@@ -3,6 +3,8 @@ import * as moment from 'moment';
 import BuildingSelector from './components/BuildingSelector';
 import SensorsChart from './components/SensorsChart';
 import EventsList from './components/EventsList';
+import DialogShower from './components/DialogShower';
+
 
 let config = {
   apiKey: "AIzaSyAlXk-lVeGKe9574UulbNZz6iZC5jm_TZI",

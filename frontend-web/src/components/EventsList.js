@@ -1,7 +1,10 @@
+import DialogShower from './DialogShower';
+
 class EventsList {
   constructor(selector) {
+    this.nItems = 0;
     this.container = document.querySelector(selector);
-    const strElement = '<ul class="mdc-list mdc-list--two-line mdc-list--avatar-list"></ul>'
+    const strElement = '<ul id="eventlist" class="mdc-list mdc-list--two-line mdc-list--avatar-list"></ul>'
     this.container.insertAdjacentHTML('beforeend', strElement);
   }
 
@@ -17,6 +20,18 @@ class EventsList {
         </span>
       </li>`;
     this.container.querySelector('ul').insertAdjacentHTML('beforeend', strElement);
+    const items = this.container.querySelector('ul').getElementsByTagName('li');
+    items[this.nItems].addEventListener(
+      'click', 
+      function (e) {
+        if(e.target && e.target.nodeName == "LI") {
+          const dialog = new DialogShower("#my-mdc-dialog");
+          dialog.addTitle(text);
+          dialog.addDescription(secondaryText);
+          dialog.show();
+        }
+    })
+    this.nItems++;
   }
 }
 
