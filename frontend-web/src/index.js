@@ -1,8 +1,9 @@
-import * as firebase from 'firebase';
 import * as moment from 'moment';
 import BuildingSelector from './components/BuildingSelector';
 import SensorsChart from './components/SensorsChart';
 import EventsList from './components/EventsList';
+import Firebase from './firebase/Firebase';
+
 
 let config = {
   apiKey: "AIzaSyAlXk-lVeGKe9574UulbNZz6iZC5jm_TZI",
@@ -14,7 +15,7 @@ let config = {
 };
 
 try {
-  let app = firebase.initializeApp(config);
+  let app = new Firebase().app;
   let features = ['auth', 'database', 'messaging', 'storage', 'firestore'].filter(feature => typeof app[feature] === 'function');
   document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
 } catch (e) {
