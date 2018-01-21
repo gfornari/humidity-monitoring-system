@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import BuildingSelector from './components/BuildingSelector';
 import SensorsChart from './components/SensorsChart';
 import EventsList from './components/EventsList';
+import DialogShower from './components/DialogShower';
 import Firebase from './firebase/Firebase';
 
 
