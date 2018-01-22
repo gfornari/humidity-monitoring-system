@@ -4,29 +4,7 @@ class SensorsChart {
   constructor(selector, buildingId, metric) {
     this.chart = Highcharts.chart(selector, {
       chart: {
-        defaultSeriesType: 'spline',
-        // useful with live data
-        events: {
-            load: function() {
-              const interval = 3000;
-              const offset = interval / 2;
-              setInterval(() => {
-                this.series[0].addPoint(
-                  [(new Date()).getTime(), Math.round(Math.random() * 1000) / 100],
-                  true, true
-                )
-              }, interval);
-
-              setTimeout(() => {
-                setInterval(() => {
-                  this.series[1].addPoint(
-                    [(new Date()).getTime(), Math.round(Math.random() * 1000) / 100],
-                    true, true
-                  )
-                }, interval);
-              }, offset)
-            }
-        }
+        defaultSeriesType: 'spline'
       },
       title: {
         text: `${metric} measurements of bulding ${buildingId}`,
@@ -34,30 +12,18 @@ class SensorsChart {
       xAxis: {
         type: 'datetime',
         tickPixelInterval: 150,
-        maxZoom: 20 * 1000
+        maxZoom: 20 * 1000,
+        title: {
+          text: 'time'
+        }
       },
       yAxis: {
         minPadding: 0.2,
         maxPadding: 0.2,
         title: {
-          text: metric,
-          margin: 80
+          text: metric
         }
-      },
-      series: [{
-        name: 'Sensor1',
-        // just a bad way to generate random data
-        data: [...new Array(10)].map((v, i) => [
-          (new Date()).getTime() - (9 - i) * 3000,
-          Math.round(Math.random() * 1000) / 100
-        ])
-      }, {
-        name: 'Sensor2',
-        data: [...new Array(10)].map((v, i) => [
-          (new Date()).getTime() - (9 - i) * 3000,
-          Math.round(Math.random() * 1000) / 100
-        ])
-      }]
+      }
     });
   }
 }
