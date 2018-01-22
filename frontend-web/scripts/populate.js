@@ -1,12 +1,13 @@
 /**
  * Populate the Firestore instance with some consistent data.
  *
- * Humidity and
- * temperature may vary a lot thus without following something meaningful. The
- * timestamps are computed considering one measurement per minute from now minus
- * the number of minutes equal to the number of measurments.
+ * Humidity and temperature may vary a lot thus without following something
+ * meaningful. The timestamps are computed considering one measurement per
+ * minute from now minus the number of minutes equal to the number of
+ * measurments.
  *
- * The uppercase variables can be used to configure the population.
+ * The uppercase variables can be used to configure the population. Make sure to
+ * create the needed indexes as well.
  */
 
 // can be either a string array or a number
@@ -48,19 +49,20 @@ if (!Array.isArray(BUILDINGS)) {
   BUILDINGS = [...new Array(BUILDINGS)].map(Number.call, Number);
 }
 
-let firstTimestap = moment().subtract(MEASUREMENTS, 'minutes');
+let firstTimestamp = moment().subtract(MEASUREMENTS, 'minutes');
 
 for (const b of BUILDINGS) {
   console.log(`Adding measurements for building ${b}`);
-  let buildingRef = db.collection('buildings').doc(b);
   for (let m = 0; m < MEASUREMENTS; m++) {
     for (let s = 0; s < SENSORS; s++) {
-      buildingRef.collection('measurements').add({
+      db.collection('measurements').add({
+        buildingId: b,
         sensorId: s,
         humidity: getRandomFloat2(50, 80),
         temperature: getRandomFloat2(-10, 25),
         // we add s seconds to simulate the async measurement of each sensor
-        timestamp: firstTimestap.add(m, 'minutes').add(s, 'seconds').toDate(),
+        // moment.add do side-effect
+        timestamp: firstTimestamp.add(1, 'minutes').add(1, 'seconds').toDate(),
       });
     }
     console.log(`${m * SENSORS} measurements added so far`);
