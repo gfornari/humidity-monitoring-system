@@ -43,7 +43,7 @@ eventsList.appendItem('warning', 'Humidity under 60%', moment().subtract(10, 'da
 
 // TODO damn ugly. Really, it should be improved.
 function handleChartsData(buildingId) {
-  db.getBuildingMeasurementsSince(buildingId, 1, 'days').then((qs) => {
+  db.getBuildingMeasurementsSince(buildingId, 7, 'days').then((qs) => {
     if (qs.empty) {
       console.log('No document retrieved');
       return;
@@ -63,8 +63,8 @@ function handleChartsData(buildingId) {
         temperatureSerie[data.sensorId] = [];
       }
 
-      humiditySerie[data.sensorId].push([ data.timestamp.getTime(), data.humidity ]);
-      temperatureSerie[data.sensorId].push([ data.timestamp.getTime(), data.temperature ]);
+      humiditySerie[data.sensorId].push([ data.timestamp, data.humidity ]);
+      temperatureSerie[data.sensorId].push([ data.timestamp, data.temperature ]);
     });
 
     // add humidity serie
@@ -87,8 +87,8 @@ function handleChartsData(buildingId) {
     db.onNewSnapshots(buildingId, qs => {
       qs.docChanges.forEach(change => {
         let data = change.doc.data();
-        sensorsChartHumidity.chart.series.find(el => el.name === data.sensorId).addPoint([ data.timestamp.getTime(), data.humidity ]);
-        sensorsChartTemperature.chart.series.find(el => el.name === data.sensorId).addPoint([ data.timestamp.getTime(), data.temperature ]);
+        sensorsChartHumidity.chart.series.find(el => el.name === data.sensorId).addPoint([ data.timestamp, data.humidity ]);
+        sensorsChartTemperature.chart.series.find(el => el.name === data.sensorId).addPoint([ data.timestamp, data.temperature ]);
       });
     });
   }).catch(console.error);

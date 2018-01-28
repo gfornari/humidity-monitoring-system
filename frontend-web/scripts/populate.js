@@ -10,12 +10,10 @@
  * create the needed indexes as well.
  */
 
-// can be either a string array or a number
 let BUILDINGS = [
   'cappellaborgoricco',
   'oratoriocadoneghe',
 ];
-// let ROOMS = 4;
 let SENSORS = 4;
 let MEASUREMENTS = 10;
 
@@ -42,27 +40,23 @@ const config = {
 firebase.initializeApp(config);
 const db = firebase.firestore();
 
-console.log(`Going to add ${MEASUREMENTS * SENSORS} total measurements ...`);
+console.log(`Going to add ${BUILDINGS.length * MEASUREMENTS * SENSORS} total measurements ...`);
 
-if (!Array.isArray(BUILDINGS)) {
-  // creates a [0,1,...,BUILDINGS] array
-  BUILDINGS = [...new Array(BUILDINGS)].map(Number.call, Number);
-}
-
-let firstTimestamp = moment().subtract(MEASUREMENTS, 'minutes');
+let firstTimestamp = moment().subtract(MEASUREMENTS, 'minutes').subtract(SENSORS, 'seconds');
 
 for (const b of BUILDINGS) {
   console.log(`Adding measurements for building ${b}`);
   for (let m = 0; m < MEASUREMENTS; m++) {
+    firstTimestamp.add(1, 'minutes');
     for (let s = 0; s < SENSORS; s++) {
       db.collection('measurements').add({
         buildingId: b,
-        sensorId: s,
+        sensorId: s.toString(),
         humidity: getRandomFloat2(50, 80),
         temperature: getRandomFloat2(-10, 25),
         // we add s seconds to simulate the async measurement of each sensor
         // moment.add do side-effect
-        timestamp: firstTimestamp.add(1, 'minutes').add(1, 'seconds').toDate(),
+        timestamp: firstTimestamp.add(1, 'seconds').valueOf(),
       });
     }
     console.log(`${m * SENSORS} measurements added so far`);

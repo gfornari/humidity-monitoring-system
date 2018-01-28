@@ -6,7 +6,7 @@ class Database {
   }
 
   getBuildingMeasurementsSince(buildingId, sinceNumber, sinceUnit) {
-    const since = moment().subtract(sinceNumber, sinceUnit).toDate();
+    const since = moment().subtract(sinceNumber, sinceUnit).valueOf();
     return this.firestore
       .collection('measurements')
       .where('buildingId', '==', buildingId)
@@ -26,7 +26,7 @@ class Database {
     return this.firestore
       .collection('measurements')
       .where('buildingId', '==', buildingId)
-      .where('timestamp', '>=', moment().toDate())
+      .where('timestamp', '>=', moment().valueOf())
       .onSnapshot(cb);
   }
 }
