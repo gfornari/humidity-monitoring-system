@@ -18,7 +18,7 @@ SqliteControllerAPI::SqliteControllerAPI(){
 int  SqliteControllerAPI::createDataTable()
 {
     // (re)create table
-    *session << "CREATE TABLE IF NOT EXISTS sensor (ID INTEGER(30) PRIMARY KEY AUTOINCREMENT, buldingId VARCHAR(30), temperature INTEGER(30),  humidity INTEGER(30), sensorId VARCHAR(30), timestamp datetime)", Keywords::now;
+    *session << "CREATE TABLE IF NOT EXISTS sensor (ID INTEGER PRIMARY KEY AUTOINCREMENT, buldingId VARCHAR(30), temperature INTEGER(30),  humidity INTEGER(30), sensorId VARCHAR(30), timestamp datetime)", Keywords::now;
 
     return 0;
 }
