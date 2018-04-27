@@ -11,6 +11,7 @@ using namespace Poco::Data;
 
 struct Measure
 {
+  int         ID;
   std::string buildingId;
   int         humidity;
   int         temperature;
@@ -18,7 +19,7 @@ struct Measure
   time_t      timestamp;
 
   Measure(){};
-  Measure(std::string buildingId, int humidity, int temperature, std::string sensorId , time_t timestamp) : 
+  Measure(std::string buildingId, int humidity, int temperature, std::string sensorId , time_t timestamp) :
     buildingId(buildingId), humidity(humidity), temperature(temperature),sensorId(sensorId),timestamp(timestamp) {};
 };
 
@@ -31,8 +32,8 @@ class SqliteControllerAPI {
     SqliteControllerAPI();
     int createDataTable();
     int insert(Measure data);
-    Statement selectSince(Measure& data, time_t timestamp);
-    int deleterow(int ID);
+    Statement selectAll(Measure& data);
+    void deleterow(int ID);
 };
 
 #endif //SQLITECONTROLLERAPI_H

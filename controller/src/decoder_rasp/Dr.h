@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "../sqlite/SqliteControllerAPI.h"
+#include "../sync/Synchronizer.h"
 
 
 #define RING_BUFFER_SIZE  256
@@ -73,13 +74,13 @@ void handler() {
   // detect sync signal
   if (isSync(ringIndex)) {
     syncCount ++;
-   
-      
+
+
     // first time sync is seen, record buffer index
     if (syncCount == 1) {
       syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
       sync1 = true;
-    } 
+    }
     else if (syncCount == 2) {
       // second time sync is seen, start bit conversion
       sync2 = true;
@@ -94,11 +95,11 @@ void handler() {
         received = false;
         syncIndex1 = 0;
         syncIndex2 = 0;
-        
-      } 
+
+      }
       else {
         received = true;
-    
+
       }
     }
 
@@ -110,21 +111,21 @@ void handler() {
 
 //This function is used to convert duration stored in timings, in bit
 int t2b(unsigned int t0, unsigned int t1) {
- //Separation gap between two rising edge is 0.45ms 
+ //Separation gap between two rising edge is 0.45ms
  if (t0>(SEP_LENGTH-100) && t0<(SEP_LENGTH+100)) {
         //Bit 1 stay up around 1.9ms
         if (t1>(BIT1_LENGTH-100) && t1<(BIT1_LENGTH+100)) {
-        
+
           return 1;
-        } 
+        }
         //Bit 1 stay up around 0.95ms
         else if (t1>(BIT0_LENGTH-100) && t1<(BIT0_LENGTH+100)) {
           return 0;
-        } 
+        }
         else {
           return -1;
         }
-      } 
+      }
       else {
          return -1;
       }
@@ -134,13 +135,13 @@ int t2b(unsigned int t0, unsigned int t1) {
 void loop(SqliteControllerAPI sq) {
 
 
-    
+
   if (received == true) {
    printf("Handler detached\n");
     // disable interrupt to avoid new data corrupting the buffer
     system("/usr/local/bin/gpio edge 2 none");
 
-    
+
 // loop over buffer data ==> This is no longer needed, since now we want to print out the converted measure.
 //    int c=0;
 //    for(unsigned int i=syncIndex1,c =0; i!=syncIndex2; i=(i+2)%RING_BUFFER_SIZE,c++) {
@@ -164,17 +165,17 @@ void loop(SqliteControllerAPI sq) {
     //Channel is write in the very first part of the first and second byte
     //01110000 10100000 01110110 11110011 0010SYNC  11.8C 50%
     //01110000 1010<== Channel bits
-    
+
     unsigned int startIndex, stopIndex;
     unsigned long channel = 0;
     bool fail = false;
-    
+
     startIndex = (syncIndex1 + (1*8+0)*2) % RING_BUFFER_SIZE;
     stopIndex  = (syncIndex1 + (1*8+8)*2) % RING_BUFFER_SIZE;
     for(unsigned int i=startIndex; i!=stopIndex; i=(i+2)%RING_BUFFER_SIZE) {
       int bit = t2b(timings[i], timings[(i+1)%RING_BUFFER_SIZE]);
       channel = (channel<<1) + bit;
-      if (bit < 0)  fail = true;      
+      if (bit < 0)  fail = true;
     }
 
     if (fail) {printf("Decoding error.");}
@@ -182,18 +183,18 @@ void loop(SqliteControllerAPI sq) {
       printf("Channel: ");
       //printf((int)(((channel)/8)-16)/2);
       printf("Channel: %d \n",(int)(((channel)/8)-16)/2);
-    } 
+    }
 
 
     //Decoding Humidity
     //Humidity is write in the last byte plus other four bit before a SYNC
     //01110000 10100000 01110110 11110011 0010SYNC  11.8C 50%
-    //                           11110011 0010<== Humidity 
+    //                           11110011 0010<== Humidity
     unsigned long humidity = 0;
     fail = false;
     startIndex = (syncIndex1 + (3*8+4)*2) % RING_BUFFER_SIZE;
     stopIndex =  (syncIndex1 + (3*8+12)*2) % RING_BUFFER_SIZE;
-    
+
     for(unsigned int i=startIndex; i!=stopIndex; i=(i+2)%RING_BUFFER_SIZE) {
       int bit = t2b(timings[i], timings[(i+1)%RING_BUFFER_SIZE]);
       humidity = (humidity<<1) + bit;
@@ -201,13 +202,13 @@ void loop(SqliteControllerAPI sq) {
     }
     if (fail) {printf("Decoding error.");}
     else {
-      printf("Humidity: %lu  \n ",humidity);  
+      printf("Humidity: %lu  \n ",humidity);
     }
 
     //Decoding Temperature
     //Humidity is write in the middle byte
     //01110000 10100000 01110110 11110011 0010SYNC  11.8C 50%
-    //             0000 01110110<== Temperature 
+    //             0000 01110110<== Temperature
     unsigned long temp = 0;
     fail = false;
     // most significant 4 bits
@@ -216,22 +217,22 @@ void loop(SqliteControllerAPI sq) {
     for(unsigned int i=startIndex; i!=stopIndex; i=(i+2)%RING_BUFFER_SIZE) {
       int bit = t2b(timings[i], timings[(i+1)%RING_BUFFER_SIZE]);
       temp = (temp<<1) + bit;
-      if (bit < 0)  fail = true;      
+      if (bit < 0)  fail = true;
     }
 
     if (fail) {printf("Decoding error.");}
 
     else {
-      
+
       printf("Temperature: ");
 	    printf("Temperature: %.6f C \n",(float)(temp)/10);
       //printf("Temperature: %d C  %d F\n",(int)((temp-1024)/10+1.9+.5),(int)(((temp-1024)/10+1.
-    } 
+    }
 
 
     time_t timev;
     time(&timev);
-    
+
     const char* buildingId = std::getenv("BUILDING_ID");
     if(buildingId == NULL) {
       throw "Environmental variable not found: BUILDING_ID";
@@ -240,8 +241,8 @@ void loop(SqliteControllerAPI sq) {
     Measure measure(buildingId,(int)humidity,(int)temp,std::to_string(channel),timev);
     int last_id = sq.insert(measure);
 
-    if(isInternetConnectionAvailable())
-    {
+    if(isInternetConnectionAvailable()) {
+      Synchronizer::sync(sq);
       Poco::JSON::Object::Ptr obj = FirebaseHelper::buildMeasurement(
         buildingId,
         std::to_string(channel), (int)humidity,(int)temp,
@@ -253,11 +254,7 @@ void loop(SqliteControllerAPI sq) {
       {
         sq.deleterow(last_id);
       }
-
-
     }
-
-
 
     // delay for 1 second to avoid repetitions
     delay(1000);

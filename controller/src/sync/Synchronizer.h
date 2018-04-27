@@ -3,12 +3,11 @@
 
 #include <string>
 
-// #include <Poco/JSON/Object.h>
+#include "../sqlite/SqliteControllerAPI.h"
 
 class Synchronizer {
   public:
-    Synchronizer();
-    void sync();
+    static void sync(SqliteControllerAPI* sq);
 };
 
 

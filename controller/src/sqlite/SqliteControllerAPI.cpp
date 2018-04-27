@@ -8,16 +8,17 @@
 using namespace Poco::Data;
 
 SqliteControllerAPI::SqliteControllerAPI(){
-      // register SQLite connector
+    // register SQLite connector
     Poco::Data::SQLite::Connector::registerConnector();
-     // create a session
+
+    // create a session
     session = new Session("SQLite","hts.db");
 }
 
 int  SqliteControllerAPI::createDataTable()
 {
     // (re)create table
-    *session << "CREATE TABLE IF NOT EXISTS sensor (ID INTEGER(30) PRIMARY KEY AUTOINCREMENT, buldingID VARCHAR(30), temperature INTEGER(30),  humidity INTEGER(30), sensorId VARCHAR(30), timestamp datetime)", Keywords::now;
+    *session << "CREATE TABLE IF NOT EXISTS sensor (ID INTEGER(30) PRIMARY KEY AUTOINCREMENT, buldingId VARCHAR(30), temperature INTEGER(30),  humidity INTEGER(30), sensorId VARCHAR(30), timestamp datetime)", Keywords::now;
 
     return 0;
 }
@@ -33,17 +34,17 @@ int SqliteControllerAPI::insert(Measure data)
         Keywords::use(data.timestamp);
 
     insert.execute();
-    
+
     Statement retrivelast(*session);
     retrivelast << "SELECT last_insert_rowid()";
 
     int last_insert_id = retrivelast.execute();
 
     return last_insert_id;
-    
+
 }
 
-int SqliteControllerAPI::deleterow(int id)
+void SqliteControllerAPI::deleterow(int id)
 {
     Statement deleterow(*session);
     deleterow << "DELETE FROM sensor WHERE ID ="+ id;
@@ -55,7 +56,7 @@ Statement SqliteControllerAPI::select(Measure& data, std::string query)
 {
     // a simple query
     Statement select(*session);
-    // select << "SELECT buldingID, temperature, humidity, sensorId, timestamp FROM sensor",
+    // select << "SELECT buldingId, temperature, humidity, sensorId, timestamp FROM sensor",
     select << query,
         Keywords::into(data.buildingId),
         Keywords::into(data.temperature),
@@ -74,9 +75,9 @@ Statement SqliteControllerAPI::select(Measure& data, std::string query)
 
 }
 
-Statement SqliteControllerAPI::selectSince(Measure& data, time_t timestamp)
+Statement SqliteControllerAPI::selectAll(Measure& data)
 {
-    return select(data, "SELECT buldingID, temperature, humidity, sensorId, timestamp FROM sensor");
+    return select(data, "SELECT id, buldingId, temperature, humidity, sensorId, timestamp FROM sensor");
 }
 
 
