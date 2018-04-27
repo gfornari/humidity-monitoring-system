@@ -41,13 +41,12 @@ int SqliteControllerAPI::insert(Measure data)
     int last_insert_id = retrivelast.execute();
 
     return last_insert_id;
-
 }
 
 void SqliteControllerAPI::deleterow(int id)
 {
     Statement deleterow(*session);
-    deleterow << "DELETE FROM sensor WHERE ID ="+ id;
+    deleterow << "DELETE FROM sensor WHERE rowid = " + id;
 
     deleterow.execute();
 }
@@ -77,7 +76,7 @@ Statement SqliteControllerAPI::select(Measure& data, std::string query)
 
 Statement SqliteControllerAPI::selectAll(Measure& data)
 {
-    return select(data, "SELECT id, buldingId, temperature, humidity, sensorId, timestamp FROM sensor");
+    return select(data, "SELECT rowid, * FROM sensor");
 }
 
 

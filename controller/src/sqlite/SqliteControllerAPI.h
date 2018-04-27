@@ -11,7 +11,7 @@ using namespace Poco::Data;
 
 struct Measure
 {
-  int         ID;
+  int         rowid;
   std::string buildingId;
   int         humidity;
   int         temperature;

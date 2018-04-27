@@ -18,7 +18,7 @@ void Synchronizer::sync(SqliteControllerAPI* sq) {
 
     int status = FirebaseAPI::createDocument(obj);
     if (status == 200) {
-      sq -> deleterow(measure.ID);
+      sq -> deleterow(measure.rowid);
     }
   }
 
