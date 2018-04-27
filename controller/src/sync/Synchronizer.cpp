@@ -9,11 +9,11 @@ void Synchronizer::sync(SqliteControllerAPI* sq) {
   std::cout << "Syncing ..." << std::endl;
 
   Measure measure;
-  Statement& select = sq -> selectAll(measure);
+  Statement select = sq -> selectAll(measure);
 
-  while (!select.done()) {
-    select.execute();
+  int rowsAffected = select.execute();
 
+  while (rowsAffected > 0) {
     std::cout
       << measure.rowid << " "
       << measure.buildingId << " "
@@ -30,6 +30,8 @@ void Synchronizer::sync(SqliteControllerAPI* sq) {
     if (status == 200) {
       sq -> deleterow(measure.rowid);
     }
+
+    rowsAffected = select.execute();
   }
 
   std::cout << "End syncing." << std::endl;

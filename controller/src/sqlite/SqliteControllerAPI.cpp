@@ -50,7 +50,7 @@ void SqliteControllerAPI::deleterow(int rowid)
     deleterow.execute();
 }
 
-Statement& SqliteControllerAPI::select(Measure& data, std::string query)
+Statement SqliteControllerAPI::select(Measure& data, std::string query)
 {
     Statement select(*session);
 
@@ -72,7 +72,7 @@ Statement& SqliteControllerAPI::select(Measure& data, std::string query)
     return select;
 }
 
-Statement& SqliteControllerAPI::selectAll(Measure& data)
+Statement SqliteControllerAPI::selectAll(Measure& data)
 {
     return select(data, "SELECT rowid, * FROM sensor");
 }
