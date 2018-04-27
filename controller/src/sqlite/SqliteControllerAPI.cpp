@@ -46,7 +46,7 @@ int SqliteControllerAPI::insert(Measure data)
 void SqliteControllerAPI::deleterow(int id)
 {
     Statement deleterow(*session);
-    deleterow << "DELETE FROM sensor WHERE rowid = " + id;
+    deleterow << "DELETE FROM sensor WHERE rowid = " << id;
 
     deleterow.execute();
 }
@@ -71,7 +71,6 @@ Statement SqliteControllerAPI::select(Measure& data, std::string query)
     // }
 
     return select;
-
 }
 
 Statement SqliteControllerAPI::selectAll(Measure& data)

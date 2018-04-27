@@ -242,7 +242,9 @@ void loop(SqliteControllerAPI sq) {
     int last_id = sq.insert(measure);
 
     if(isInternetConnectionAvailable()) {
+      std::cout << "Internet connection available" << std::endl;
       Synchronizer::sync(&sq);
+
       Poco::JSON::Object::Ptr obj = FirebaseHelper::buildMeasurement(
         buildingId,
         std::to_string(channel), (int)humidity,(int)temp,
@@ -250,10 +252,14 @@ void loop(SqliteControllerAPI sq) {
 
       int status = FirebaseAPI::createDocument(obj);
 
-      if(status == 200)
-      {
+      std::cout << "status " << status << std::endl;
+
+      if(status == 200) {
         sq.deleterow(last_id);
       }
+
+    } else {
+      std::cout << "Internet connection not available" << std::endl;
     }
 
     // delay for 1 second to avoid repetitions

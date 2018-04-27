@@ -1,10 +1,13 @@
 #include "Synchronizer.h"
 
+#include <iostream>
+
 #include "../firebase/FirebaseAPI.h"
 #include "../firebase/FirebaseHelper.h"
 
 void Synchronizer::sync(SqliteControllerAPI* sq) {
-  // see if there are scheduled jobs
+  std::cout << "Syncing ..." << std::endl;
+
   Measure measure;
   Statement select = sq -> selectAll(measure);
 
@@ -22,12 +25,5 @@ void Synchronizer::sync(SqliteControllerAPI* sq) {
     }
   }
 
-  // send scheduled jobs
-
-  // get most recent firebase doc
-
-  // get all docs younger than firebase doc
-
-  // if there are docs, send all docs retrived
-    // if someone failed, reschedule them
+  std::cout << "End syncing." << std::endl;
 }
