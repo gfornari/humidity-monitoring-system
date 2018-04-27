@@ -12,19 +12,9 @@
 #include "firebase/FirebaseAPI.h"
 #include "firebase/FirebaseHelper.h"
 #include "sqlite/SqliteControllerAPI.h"
-//#include "decoder_rasp/decoder_rasp.h"
 #include "decoder_rasp/Dr.h"
 
 
-
-bool isInternetConnectionAvailable() {
-  try {
-    Poco::Net::DNS::resolve("firestore.googleapis.com");
-    return true;
-  } catch(Poco::Exception& e) {
-    return false;
-  }
-}
 
 int main(int argc, char** argv) {
   try {
@@ -62,10 +52,10 @@ int main(int argc, char** argv) {
     // // }
 
     // //   Measure sensore1("CappellaBorgoricco",55,25,"3",timev);
-    // //   sq.selectSince(sensore1,155864); 
+    // //   sq.selectSince(sensore1,155864);
 
     // decoder_rasp dc;
-    
+
     // while(true)
     // {
     //   dc.loop();
@@ -77,7 +67,7 @@ int main(int argc, char** argv) {
 		return 0;
 	  }
 	  printf("first time handler attached");
-    
+
     SqliteControllerAPI sq;
     sq.createDataTable();
 
@@ -86,7 +76,7 @@ int main(int argc, char** argv) {
 
       loop(sq);
     }
-      
+
 
     //oppure
     //SqliteControllerAPI* p = new SqliteControllerAPI();
