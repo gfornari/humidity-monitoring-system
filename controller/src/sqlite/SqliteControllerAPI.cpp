@@ -43,20 +43,20 @@ int SqliteControllerAPI::insert(Measure data)
     return last_insert_id;
 }
 
-void SqliteControllerAPI::deleterow(int id)
+void SqliteControllerAPI::deleterow(int rowid)
 {
     Statement deleterow(*session);
-    deleterow << "DELETE FROM sensor WHERE rowid = " << id;
+    deleterow << "DELETE FROM sensor WHERE rowid = " << rowid;
 
     deleterow.execute();
 }
 
 Statement SqliteControllerAPI::select(Measure& data, std::string query)
 {
-    // a simple query
     Statement select(*session);
-    // select << "SELECT buldingId, temperature, humidity, sensorId, timestamp FROM sensor",
+
     select << query,
+        Keywords::into(data.rowid),
         Keywords::into(data.buildingId),
         Keywords::into(data.temperature),
         Keywords::into(data.humidity),
@@ -64,8 +64,8 @@ Statement SqliteControllerAPI::select(Measure& data, std::string query)
         Keywords::into(data.timestamp),
         Keywords::range(0, 1); //  iterate over result set one row at a time
 
-    // while (!select.done())
-    // {
+    // Usage:
+    // while (!select.done()) {
     //     select.execute();
     //     std::cout << data.buildingId << " " << data.temperature << " " << data.humidity << " " << data.sensorId << " " << data.timestamp << std::endl;
     // }

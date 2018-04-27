@@ -33,7 +33,7 @@ class SqliteControllerAPI {
     int createDataTable();
     int insert(Measure data);
     Statement selectAll(Measure& data);
-    void deleterow(int ID);
+    void deleterow(int rowid);
 };
 
 #endif //SQLITECONTROLLERAPI_H

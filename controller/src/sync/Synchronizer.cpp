@@ -14,10 +14,17 @@ void Synchronizer::sync(SqliteControllerAPI* sq) {
   while (!select.done()) {
     select.execute();
 
+    std::cout
+      << measure.rowid << " "
+      << measure.buildingId << " "
+      << measure.sensorId << " "
+      << measure.humidity << " "
+      << measure.temperature << " "
+      << measure.timestamp << std::endl;
+
     Poco::JSON::Object::Ptr obj = FirebaseHelper::buildMeasurement(
-      measure.buildingId,
-      measure.sensorId, measure.humidity,measure.temperature,
-      measure.timestamp);
+      measure.buildingId, measure.sensorId, measure.humidity,
+      measure.temperature, measure.timestamp);
 
     int status = FirebaseAPI::createDocument(obj);
     if (status == 200) {
