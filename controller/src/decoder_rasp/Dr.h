@@ -137,7 +137,7 @@ void loop(SqliteControllerAPI sq) {
 
 
   if (received == true) {
-   printf("Handler detached\n");
+    printf("Handler detached\n");
     // disable interrupt to avoid new data corrupting the buffer
     system("/usr/local/bin/gpio edge 2 none");
 
@@ -178,8 +178,10 @@ void loop(SqliteControllerAPI sq) {
       if (bit < 0)  fail = true;
     }
 
-    if (fail) {printf("Decoding error.");}
-    else {
+    if (fail) {
+      printf("Decoding error.");
+      return;
+    } else {
       printf("Channel: ");
       //printf((int)(((channel)/8)-16)/2);
       printf("Channel: %d \n",(int)(((channel)/8)-16)/2);
@@ -200,8 +202,10 @@ void loop(SqliteControllerAPI sq) {
       humidity = (humidity<<1) + bit;
       if (bit < 0)  fail = true;
     }
-    if (fail) {printf("Decoding error.");}
-    else {
+    if (fail) {
+      printf("Decoding error.");
+      return;
+    } else {
       printf("Humidity: %lu  \n ",humidity);
     }
 
@@ -220,9 +224,10 @@ void loop(SqliteControllerAPI sq) {
       if (bit < 0)  fail = true;
     }
 
-    if (fail) {printf("Decoding error.");}
-
-    else {
+    if (fail) {
+      printf("Decoding error.");
+      return;
+    } else {
 	    printf("Temperature: %.6f C \n",(float)(temp)/10);
       //printf("Temperature: %d C  %d F\n",(int)((temp-1024)/10+1.9+.5),(int)(((temp-1024)/10+1.
     }
@@ -262,7 +267,7 @@ void loop(SqliteControllerAPI sq) {
 
     // re-enable interrupt
     printf("Handler re-attached\n");
-   // Error in the original code
-   // wiringPiISR(DATAPIN,INT_EDGE_BOTH,&handler);
+    // Error in the original code
+    // wiringPiISR(DATAPIN,INT_EDGE_BOTH,&handler);
   }
 }
