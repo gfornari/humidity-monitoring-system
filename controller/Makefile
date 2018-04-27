@@ -16,7 +16,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS),/usr/local/include/Poco)
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP
 
 LIBDIR := /usr/local/lib
-LDFLAGS := -lPocoFoundation -lPocoNet -lPocoJSON -lPocoNetSSL
+LDFLAGS := -lPocoFoundation -lPocoNet -lPocoJSON -lPocoNetSSL -lPocoData -lPocoDataSQLite -lwiringPi -lwiringPiDev -lpthread -lm -lcrypt -lrt
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $@ -L$(LIBDIR) $(LDFLAGS)

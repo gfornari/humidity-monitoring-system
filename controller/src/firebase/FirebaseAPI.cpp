@@ -43,7 +43,7 @@ int FirebaseAPI::httpPOST(const std::string url, const Poco::JSON::Object::Ptr o
     Poco::Dynamic::Var parsed = parser.parse(s);
     std::cout << parsed.toString() << std::endl;
 
-    return 0;
+    return response.getStatus();
 }
 
 int FirebaseAPI::runQuery(const std::string buildingId) {
