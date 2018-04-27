@@ -242,7 +242,7 @@ void loop(SqliteControllerAPI sq) {
     int last_id = sq.insert(measure);
 
     if(isInternetConnectionAvailable()) {
-      Synchronizer::sync(sq);
+      Synchronizer::sync(&sq);
       Poco::JSON::Object::Ptr obj = FirebaseHelper::buildMeasurement(
         buildingId,
         std::to_string(channel), (int)humidity,(int)temp,
