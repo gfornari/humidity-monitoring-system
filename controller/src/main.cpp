@@ -89,8 +89,8 @@ int main(int argc, char** argv) {
   } catch(Poco::Exception& exc) {
     std::cerr << exc.displayText() << std::endl;
     return 1;
-  } catch(std::exception exc) {
-    std::cerr << exc.displayText() << std::endl;
+  } catch(std::exception& exc) {
+    std::cerr << exc.what() << std::endl;
     return 1;
   }
   return 0;
