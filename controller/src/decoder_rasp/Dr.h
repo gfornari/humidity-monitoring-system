@@ -223,12 +223,9 @@ void loop(SqliteControllerAPI sq) {
     if (fail) {printf("Decoding error.");}
 
     else {
-
-      printf("Temperature: ");
 	    printf("Temperature: %.6f C \n",(float)(temp)/10);
       //printf("Temperature: %d C  %d F\n",(int)((temp-1024)/10+1.9+.5),(int)(((temp-1024)/10+1.
     }
-
 
     time_t timev;
     time(&timev);
@@ -242,7 +239,7 @@ void loop(SqliteControllerAPI sq) {
       Synchronizer::sync(&sq);
     }
 
-    Measure measure(buildingId,(int)humidity,(int)temp,std::to_string(channel),timev);
+    Measure measure(buildingId, (int)humidity, (int)temp, std::to_string(channel), timev);
     int last_id = sq.insert(measure);
 
     if (isInternetConnectionAvailable()) {

@@ -19,8 +19,8 @@ struct Measure
   time_t      timestamp;
 
   Measure(){};
-  Measure(std::string buildingId, int humidity, int temperature, std::string sensorId , time_t timestamp) :
-    buildingId(buildingId), humidity(humidity), temperature(temperature),sensorId(sensorId),timestamp(timestamp) {};
+  Measure(int rowid, std::string buildingId, int humidity, int temperature, std::string sensorId , time_t timestamp) :
+    rowid(rowid), buildingId(buildingId), humidity(humidity), temperature(temperature),sensorId(sensorId),timestamp(timestamp) {};
 };
 
 class SqliteControllerAPI {
