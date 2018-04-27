@@ -62,7 +62,7 @@ Statement SqliteControllerAPI::select(Measure& data, std::string query)
         Keywords::into(data.humidity),
         Keywords::into(data.sensorId),
         Keywords::into(data.timestamp),
-        Keywords::range(1, 1); //  iterate over result set one row at a time
+        Keywords::limit(1); //  iterate over result set one row at a time
 
     // Usage:
     // while (!select.done()) {
