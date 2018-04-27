@@ -234,32 +234,27 @@ void loop(SqliteControllerAPI sq) {
     time(&timev);
 
     const char* buildingId = std::getenv("BUILDING_ID");
-    if(buildingId == NULL) {
+    if (buildingId == NULL) {
       throw "Environmental variable not found: BUILDING_ID";
+    }
+
+    if (isInternetConnectionAvailable()) {
+      Synchronizer::sync(&sq);
     }
 
     Measure measure(buildingId,(int)humidity,(int)temp,std::to_string(channel),timev);
     int last_id = sq.insert(measure);
 
-    if(isInternetConnectionAvailable()) {
-      std::cout << "Internet connection available" << std::endl;
-      Synchronizer::sync(&sq);
-
+    if (isInternetConnectionAvailable()) {
       Poco::JSON::Object::Ptr obj = FirebaseHelper::buildMeasurement(
-        buildingId,
-        std::to_string(channel), (int)humidity,(int)temp,
-        timev);
+        buildingId, std::to_string(channel), (int)humidity, (int)temp, timev);
 
       int status = FirebaseAPI::createDocument(obj);
-
       std::cout << "status " << status << std::endl;
 
-      if(status == 200) {
+      if (status == 200) {
         sq.deleterow(last_id);
       }
-
-    } else {
-      std::cout << "Internet connection not available" << std::endl;
     }
 
     // delay for 1 second to avoid repetitions
