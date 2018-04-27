@@ -62,18 +62,18 @@ int main(int argc, char** argv) {
 
     // }
 
-    if(wiringPiSetup() == -1){
-		printf("no wiring pi detected\n");
-		return 0;
+    if(wiringPiSetup() == -1) {
+      printf("no wiring pi detected\n");
+      return 0;
 	  }
-	  printf("first time handler attached");
+
+    printf("first time handler attached");
 
     SqliteControllerAPI sq;
     sq.createDataTable();
 
     wiringPiISR(DATAPIN,INT_EDGE_BOTH,&handler);
-    while(true){
-
+    while(true) {
       loop(sq);
     }
 

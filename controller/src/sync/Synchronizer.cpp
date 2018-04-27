@@ -9,7 +9,7 @@ void Synchronizer::sync(SqliteControllerAPI* sq) {
   std::cout << "Syncing ..." << std::endl;
 
   Measure measure;
-  Statement select = sq -> selectAll(measure);
+  Statement& select = sq -> selectAll(measure);
 
   while (!select.done()) {
     select.execute();

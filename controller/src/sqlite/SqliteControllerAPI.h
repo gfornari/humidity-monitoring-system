@@ -26,13 +26,13 @@ struct Measure
 class SqliteControllerAPI {
   private:
     Session* session;
-    Statement select(Measure& data, std::string query);
+    Statement& select(Measure& data, std::string query);
 
   public:
     SqliteControllerAPI();
     int createDataTable();
     int insert(Measure data);
-    Statement selectAll(Measure& data);
+    Statement& selectAll(Measure& data);
     void deleterow(int rowid);
 };
 

@@ -47,11 +47,10 @@ void SqliteControllerAPI::deleterow(int rowid)
 {
     Statement deleterow(*session);
     deleterow << "DELETE FROM sensor WHERE rowid = " << rowid;
-
     deleterow.execute();
 }
 
-Statement SqliteControllerAPI::select(Measure& data, std::string query)
+Statement& SqliteControllerAPI::select(Measure& data, std::string query)
 {
     Statement select(*session);
 
@@ -62,7 +61,7 @@ Statement SqliteControllerAPI::select(Measure& data, std::string query)
         Keywords::into(data.humidity),
         Keywords::into(data.sensorId),
         Keywords::into(data.timestamp),
-        Keywords::limit(1); //  iterate over result set one row at a time
+        Keywords::range(0, 1); // iterate over result set one row at a time
 
     // Usage:
     // while (!select.done()) {
@@ -73,7 +72,7 @@ Statement SqliteControllerAPI::select(Measure& data, std::string query)
     return select;
 }
 
-Statement SqliteControllerAPI::selectAll(Measure& data)
+Statement& SqliteControllerAPI::selectAll(Measure& data)
 {
     return select(data, "SELECT rowid, * FROM sensor");
 }
