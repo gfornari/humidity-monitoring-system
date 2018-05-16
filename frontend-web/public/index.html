@@ -11,6 +11,7 @@
   <!-- load Material Components Web -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
   <!-- load Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -19,14 +20,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="mdc-toolbar">
-    <div class="mdc-toolbar__row">
-      <section class="mdc-toolbar__section">
-        <span class="mdc-toolbar__title">Humidity and temperature monitoring</span>
-      </section>
-    </div>
-  </header>
+  <h1 class="display-1" style="text-align: center; color: #039be5">Humidity and Temperature Monitoring</h1>
+  
   <main>
+   <!-- ***dialog part*** --> 
 	<aside id="my-mdc-dialog"
 	  class="mdc-dialog"
 	  role="alertdialog"
@@ -48,6 +45,7 @@
 	  </div>
 	  <div class="mdc-dialog__backdrop"></div>
 	</aside>
+  <!-- ***** -->
     <div id="building-selector"></div>
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
@@ -56,7 +54,7 @@
       </div>
     </div>
     <section class="events">
-      <h1 class="mdc-typography--display1">Events</h1>
+      <h1 class="mdc-typography--display1" style="color: red">Critical Events</h1>
       <div id="events-list"></div>
     </section>
   </main>

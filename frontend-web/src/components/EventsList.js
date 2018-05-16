@@ -33,6 +33,10 @@ class EventsList {
     })
     this.nItems++;
   }
+
+  deleteAllEvents() {
+    this.container.removeChild(this.container.firstChild);
+  }
 }
 
 export default EventsList;
