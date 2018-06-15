@@ -11,11 +11,11 @@ try {
   let firebase = new Firebase();
   let app = firebase.app;
   let features = ['auth', 'database', 'messaging', 'storage', 'firestore'].filter(feature => typeof app[feature] === 'function');
-  document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+  console.log(`Firebase SDK loaded with ${features.join(', ')}`);
   db = firebase.getDB();
 } catch (e) {
+  console.error('Error loading the Firebase SDK');
   console.error(e);
-  document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
 }
 
 const buildings = ['cappellaborgoricco', 'oratoriocadoneghe'];
@@ -82,9 +82,9 @@ function handleChartsData(buildingId) {
         name: sensorId,
         data: humiditySerie[sensorId],
       });
-      
+
       // detecting critical events
-	  let humidityCriticalEvents = humiditySerie[sensorId].filter(detection => 
+	  let humidityCriticalEvents = humiditySerie[sensorId].filter(detection =>
 	  	detection[1] <= lowHumidityThreshold ||
 	  	detection[1] >= upHumidityThreshold
 	  )
@@ -92,8 +92,8 @@ function handleChartsData(buildingId) {
 	  let temperatureCriticalEvents = temperatureSerie[sensorId].filter(detection =>
 		detection[1] <= lowTemperatureThreshold ||
 	  	detection[1] >= upTemperatureThreshold
-	  )	  
-	  	
+	  )
+
 	  // adding critical events to the list
 	  humidityCriticalEvents.forEach(criticalEvent => {
 	  	let lowHigh, lhThreshold;
@@ -108,8 +108,8 @@ function handleChartsData(buildingId) {
 	  	const adjustedTime = adjustTime(new Date(criticalEvent[0]));
 
 	  	eventsList.appendItem('warning', 'Humidity ' + lowHigh + ' ' + lhThreshold + ' detected by sensor ' + sensorId,
-	    new Date(criticalEvent[0]).toDateString() + ", " 
-	    + adjustedTime[0] + ":" 
+	    new Date(criticalEvent[0]).toDateString() + ", "
+	    + adjustedTime[0] + ":"
 	    + adjustedTime[1] + ":"
 	    + adjustedTime[2]);
 	  })
@@ -127,8 +127,8 @@ function handleChartsData(buildingId) {
 	  	const adjustedTime = adjustTime(new Date(criticalEvent[0]));
 
 	  	eventsList.appendItem('warning', 'Temperature ' + lowHigh + ' ' + lhThreshold + ' detected by sensor ' + sensorId,
-	    new Date(criticalEvent[0]).toDateString() + ", " 
-	    + adjustedTime[0] + ":" 
+	    new Date(criticalEvent[0]).toDateString() + ", "
+	    + adjustedTime[0] + ":"
 	    + adjustedTime[1] + ":"
 	    + adjustedTime[2]);
 	  })
