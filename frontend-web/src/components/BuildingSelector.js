@@ -1,5 +1,4 @@
 import { MDCSelect } from '@material/select';
-import SensorsChart from './SensorsChart';
 
 class BuildingSelector {
   constructor(selector) {
@@ -14,7 +13,7 @@ class BuildingSelector {
    //  </div>
    //  <div class="mdc-simple-menu mdc-select__menu">
    //  <ul class="mdc-list mdc-simple-menu__items">
-   //  </ul> 
+   //  </ul>
    //  </div>
    //  </div>`
     `<div class="mdc-select">
