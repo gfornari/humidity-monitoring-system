@@ -51,12 +51,11 @@ bool isSync(unsigned int idx) {
   return false;
 }
 
-int called = 0;
+int syncM = 0;
+
 
 /* Interrupt 1 handler */
 void handler() {
-  printf("Handler called. %d\n", called);
-
   static unsigned long duration = 0;
   static unsigned long lastTime = 0;
   static unsigned int ringIndex = 0;
@@ -78,6 +77,8 @@ void handler() {
   // detect sync signal
   if (isSync(ringIndex)) {
     syncCount ++;
+    printf("Sync global %d\n", syncM);
+    printf("Sync local %d\n", syncCount);
 
     // first time sync is seen, record buffer index
     if (syncCount == 1) {
