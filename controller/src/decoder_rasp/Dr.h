@@ -77,7 +77,7 @@ void handler() {
   // detect sync signal
   if (isSync(ringIndex)) {
     syncCount ++;
-    printf("Sync global %d\n", syncM);
+    printf("Sync global %d\n", ++syncM);
     printf("Sync local %d\n", syncCount);
 
     // first time sync is seen, record buffer index
