@@ -55,8 +55,7 @@ int called = 0;
 
 /* Interrupt 1 handler */
 void handler() {
-  printf("Handler called. ");
-  printf(called);
+  printf("Handler called. %d\n", called);
 
   static unsigned long duration = 0;
   static unsigned long lastTime = 0;
