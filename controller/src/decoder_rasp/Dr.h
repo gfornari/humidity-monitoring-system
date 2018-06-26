@@ -51,8 +51,13 @@ bool isSync(unsigned int idx) {
   return false;
 }
 
+int called = 0;
+
 /* Interrupt 1 handler */
 void handler() {
+  printf("Handler called. ");
+  printf(called);
+
   static unsigned long duration = 0;
   static unsigned long lastTime = 0;
   static unsigned int ringIndex = 0;
@@ -74,7 +79,6 @@ void handler() {
   // detect sync signal
   if (isSync(ringIndex)) {
     syncCount ++;
-
 
     // first time sync is seen, record buffer index
     if (syncCount == 1) {
@@ -137,7 +141,7 @@ void loop(SqliteControllerAPI sq) {
   if (received == true) {
     printf("Handler detached\n");
     // disable interrupt to avoid new data corrupting the buffer
-    system("/usr/local/bin/gpio edge 2 none");
+    // system("/usr/local/bin/gpio edge 2 none");
 
 
 // loop over buffer data ==> This is no longer needed, since now we want to print out the converted measure.
@@ -232,7 +236,7 @@ void loop(SqliteControllerAPI sq) {
 	    printf("Temperature: %.6f C \n",(float)(temp)/10);
       //printf("Temperature: %d C  %d F\n",(int)((temp-1024)/10+1.9+.5),(int)(((temp-1024)/10+1.
     }
-
+/*
     time_t timev;
     time(&timev);
 
@@ -259,12 +263,12 @@ void loop(SqliteControllerAPI sq) {
         sq.deleterow(last_id);
       }
     }
-
+*/
     // delay for 1 second to avoid repetitions
-    delay(1000);
-    received = false;
+    // delay(1000);
     syncIndex1 = 0;
     syncIndex2 = 0;
+    received = false;
 
     // re-enable interrupt
     printf("Handler re-attached\n");
