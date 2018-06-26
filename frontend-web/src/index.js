@@ -83,54 +83,54 @@ function handleChartsData(buildingId) {
       });
 
       // detecting critical events
-	  let humidityCriticalEvents = humiditySerie[sensorId].filter(detection =>
-	  	detection[1] <= lowHumidityThreshold ||
-	  	detection[1] >= upHumidityThreshold
-	  )
+      let humidityCriticalEvents = humiditySerie[sensorId].filter(detection =>
+        detection[1] <= lowHumidityThreshold ||
+        detection[1] >= upHumidityThreshold
+      )
 
-	  let temperatureCriticalEvents = temperatureSerie[sensorId].filter(detection =>
-		detection[1] <= lowTemperatureThreshold ||
-	  	detection[1] >= upTemperatureThreshold
-	  )
+      let temperatureCriticalEvents = temperatureSerie[sensorId].filter(detection =>
+        detection[1] <= lowTemperatureThreshold ||
+        detection[1] >= upTemperatureThreshold
+      )
 
-	  // adding critical events to the list
-	  humidityCriticalEvents.forEach(criticalEvent => {
-	  	let lowHigh, lhThreshold;
-	  	if (criticalEvent[1] >= upHumidityThreshold) {
-	  		lowHigh = 'over';
-	  		lhThreshold = upHumidityThreshold;
-	  	} else {
-	  		lowHigh = 'under';
-	  		lhThreshold = lowHumidityThreshold;
-	  	}
+      // adding critical events to the list
+      humidityCriticalEvents.forEach(criticalEvent => {
+        let lowHigh, lhThreshold;
+        if (criticalEvent[1] >= upHumidityThreshold) {
+          lowHigh = 'over';
+          lhThreshold = upHumidityThreshold;
+        } else {
+          lowHigh = 'under';
+          lhThreshold = lowHumidityThreshold;
+        }
 
-	  	const adjustedTime = adjustTime(new Date(criticalEvent[0]));
+        const adjustedTime = adjustTime(new Date(criticalEvent[0]));
 
-	  	eventsList.appendItem('warning', 'Humidity ' + lowHigh + ' ' + lhThreshold + ' detected by sensor ' + sensorId,
-	    new Date(criticalEvent[0]).toDateString() + ", "
-	    + adjustedTime[0] + ":"
-	    + adjustedTime[1] + ":"
-	    + adjustedTime[2]);
-	  })
+        eventsList.appendItem('warning', 'Humidity ' + lowHigh + ' ' + lhThreshold + ' detected by sensor ' + sensorId,
+        new Date(criticalEvent[0]).toDateString() + ", "
+        + adjustedTime[0] + ":"
+        + adjustedTime[1] + ":"
+        + adjustedTime[2]);
+      });
 
-	  temperatureCriticalEvents.forEach(criticalEvent => {
-	  	let lowHigh, lhThreshold;
-	  	if (criticalEvent[1] >= upTemperatureThreshold) {
-	  		lowHigh = 'over';
-	  		lhThreshold = upTemperatureThreshold;
-	  	} else {
-	  		lowHigh = 'under';
-	  		lhThreshold = lowTemperatureThreshold;
-	  	}
+      temperatureCriticalEvents.forEach(criticalEvent => {
+        let lowHigh, lhThreshold;
+        if (criticalEvent[1] >= upTemperatureThreshold) {
+          lowHigh = 'over';
+          lhThreshold = upTemperatureThreshold;
+        } else {
+          lowHigh = 'under';
+          lhThreshold = lowTemperatureThreshold;
+        }
 
-	  	const adjustedTime = adjustTime(new Date(criticalEvent[0]));
+        const adjustedTime = adjustTime(new Date(criticalEvent[0]));
 
-	  	eventsList.appendItem('warning', 'Temperature ' + lowHigh + ' ' + lhThreshold + ' detected by sensor ' + sensorId,
-	    new Date(criticalEvent[0]).toDateString() + ", "
-	    + adjustedTime[0] + ":"
-	    + adjustedTime[1] + ":"
-	    + adjustedTime[2]);
-	  })
+        eventsList.appendItem('warning', 'Temperature ' + lowHigh + ' ' + lhThreshold + ' detected by sensor ' + sensorId,
+        new Date(criticalEvent[0]).toDateString() + ", "
+        + adjustedTime[0] + ":"
+        + adjustedTime[1] + ":"
+        + adjustedTime[2]);
+      });
     });
 
     // add temperature serie
@@ -152,13 +152,13 @@ function handleChartsData(buildingId) {
   }).catch(console.error);
 
   function adjustTime(date) {
-  	let hour = date.getHours() - 2;
-  	let minute = date.getMinutes();
-  	let second = date.getSeconds();
-  	if (hour < 10)    hour = '0' + hour;
-  	if (minute < 10)  minute = '0' + minute;
-  	if (second < 10)  second = '0' + second;
+    let hour = date.getHours() - 2;
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
+    if (hour < 10)    hour = '0' + hour;
+    if (minute < 10)  minute = '0' + minute;
+    if (second < 10)  second = '0' + second;
 
-  	return [hour,minute,second]
+    return [hour,minute,second]
   }
 }

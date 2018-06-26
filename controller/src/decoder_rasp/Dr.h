@@ -134,8 +134,6 @@ int t2b(unsigned int t0, unsigned int t1) {
 
 void loop(SqliteControllerAPI sq) {
 
-
-
   if (received == true) {
     printf("Handler detached\n");
     // disable interrupt to avoid new data corrupting the buffer
@@ -180,6 +178,7 @@ void loop(SqliteControllerAPI sq) {
 
     if (fail) {
       printf("Decoding error.");
+      received = false;
       return;
     } else {
       printf("Channel: ");
@@ -204,6 +203,7 @@ void loop(SqliteControllerAPI sq) {
     }
     if (fail) {
       printf("Decoding error.");
+      received = false;
       return;
     } else {
       printf("Humidity: %lu  \n ",humidity);
@@ -226,6 +226,7 @@ void loop(SqliteControllerAPI sq) {
 
     if (fail) {
       printf("Decoding error.");
+      received = false;
       return;
     } else {
 	    printf("Temperature: %.6f C \n",(float)(temp)/10);
