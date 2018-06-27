@@ -1,6 +1,7 @@
 #include <wiringPi.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 
 #include "../sqlite/SqliteControllerAPI.h"
 #include "../sync/Synchronizer.h"
@@ -76,10 +77,17 @@ void handler() {
 
   // detect sync signal
   if (isSync(ringIndex)) {
-    syncCount ++;
-    printf("Sync global %d\n", ++syncM);
-    printf("Sync local %d\n", syncCount);
+    // syncCount ++k;
+    // printf("Sync global %d\n", ++syncM);
+    // printf("Sync local %d\n", syncCount);
 
+    std::cout << "Sync " << ++syncM << std::endl;
+
+    syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
+    received = true;
+
+    decode();
+/*
     // first time sync is seen, record buffer index
     if (syncCount == 1) {
       syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
@@ -105,9 +113,79 @@ void handler() {
         received = true;
 
       }
-    }
+    }*/
 
   }
+}
+
+void decode() {
+  //Decoding Channels
+  //Channel is write in the very first part of the first and second byte
+  //01110000 10100000 01110110 11110011 0010SYNC  11.8C 50%
+  //01110000 1010<== Channel bits
+
+  unsigned int startIndex, stopIndex;
+  unsigned long channel = 0;
+  bool fail = false;
+
+  startIndex = (syncIndex1 + (1*8+0)*2) % RING_BUFFER_SIZE;
+  stopIndex  = (syncIndex1 + (1*8+8)*2) % RING_BUFFER_SIZE;
+  for(unsigned int i=startIndex; i!=stopIndex; i=(i+2)%RING_BUFFER_SIZE) {
+    int bit = t2b(timings[i], timings[(i+1)%RING_BUFFER_SIZE]);
+    channel = (channel<<1) + bit;
+    if (bit < 0)  fail = true;
+  }
+
+  if (fail) {
+    std::cout << "Decoding error: channel" << std::endl;
+  } else {
+    std::cout << "Channel: " << (int)(((channel)/8)-16)/2 << std::endl;
+  }
+
+
+  //Decoding Humidity
+  //Humidity is write in the last byte plus other four bit before a SYNC
+  //01110000 10100000 01110110 11110011 0010SYNC  11.8C 50%
+  //                           11110011 0010<== Humidity
+  unsigned long humidity = 0;
+  fail = false;
+  startIndex = (syncIndex1 + (3*8+4)*2) % RING_BUFFER_SIZE;
+  stopIndex =  (syncIndex1 + (3*8+12)*2) % RING_BUFFER_SIZE;
+
+  for(unsigned int i=startIndex; i!=stopIndex; i=(i+2)%RING_BUFFER_SIZE) {
+    int bit = t2b(timings[i], timings[(i+1)%RING_BUFFER_SIZE]);
+    humidity = (humidity<<1) + bit;
+    if (bit < 0)  fail = true;
+  }
+  if (fail) {
+    std::cout << "Decoding error: humidity" << std::endl;
+  } else {
+    std::cout << "Humidity: " << humidity << std::endl;
+  }
+
+  //Decoding Temperature
+  //Humidity is write in the middle byte
+  //01110000 10100000 01110110 11110011 0010SYNC  11.8C 50%
+  //             0000 01110110<== Temperature
+  unsigned long temp = 0;
+  fail = false;
+  // most significant 4 bits
+  startIndex = (syncIndex1 + (1*8+4)*2) % RING_BUFFER_SIZE;
+  stopIndex  = (syncIndex1 + (2*8+8)*2) % RING_BUFFER_SIZE;
+  for(unsigned int i=startIndex; i!=stopIndex; i=(i+2)%RING_BUFFER_SIZE) {
+    int bit = t2b(timings[i], timings[(i+1)%RING_BUFFER_SIZE]);
+    temp = (temp<<1) + bit;
+    if (bit < 0)  fail = true;
+  }
+
+  if (fail) {
+    std::cout << "Decoding error: temperature" << std::endl;
+  } else {
+    std::cout << "Humidity: " << (float)(temp)/10 << std::endl;
+  }
+
+  syncIndex1 = 0;
+  received = false;
 }
 
 
