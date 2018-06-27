@@ -54,6 +54,28 @@ bool isSync(unsigned int idx) {
 
 int syncM = 0;
 
+//This function is used to convert duration stored in timings, in bit
+int t2b(unsigned int t0, unsigned int t1) {
+ //Separation gap between two rising edge is 0.45ms
+ if (t0>(SEP_LENGTH-100) && t0<(SEP_LENGTH+100)) {
+        //Bit 1 stay up around 1.9ms
+        if (t1>(BIT1_LENGTH-100) && t1<(BIT1_LENGTH+100)) {
+
+          return 1;
+        }
+        //Bit 1 stay up around 0.95ms
+        else if (t1>(BIT0_LENGTH-100) && t1<(BIT0_LENGTH+100)) {
+          return 0;
+        }
+        else {
+          return -1;
+        }
+      }
+      else {
+         return -1;
+      }
+}
+
 
 void decode() {
   //Decoding Channels
@@ -192,27 +214,7 @@ void handler() {
 
 
 
-//This function is used to convert duration stored in timings, in bit
-int t2b(unsigned int t0, unsigned int t1) {
- //Separation gap between two rising edge is 0.45ms
- if (t0>(SEP_LENGTH-100) && t0<(SEP_LENGTH+100)) {
-        //Bit 1 stay up around 1.9ms
-        if (t1>(BIT1_LENGTH-100) && t1<(BIT1_LENGTH+100)) {
 
-          return 1;
-        }
-        //Bit 1 stay up around 0.95ms
-        else if (t1>(BIT0_LENGTH-100) && t1<(BIT0_LENGTH+100)) {
-          return 0;
-        }
-        else {
-          return -1;
-        }
-      }
-      else {
-         return -1;
-      }
-}
 
 
 void loop(SqliteControllerAPI sq) {
