@@ -144,6 +144,7 @@ void decode() {
   }
 
   syncIndex1 = 0;
+  syncIndex2 = 0;
   received = false;
 }
 
@@ -169,21 +170,22 @@ void handler() {
 
   // detect sync signal
   if (isSync(ringIndex)) {
-    // syncCount ++k;
+    syncCount++;
     // printf("Sync global %d\n", ++syncM);
     // printf("Sync local %d\n", syncCount);
 
     std::cout << "Sync " << ++syncM << std::endl;
 
-    syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
-    received = true;
-
+    std::cout << "Decode 1" << std::endl;
     decode();
-/*
+
     // first time sync is seen, record buffer index
     if (syncCount == 1) {
       syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
       sync1 = true;
+
+      std::cout << "Decode 2" << std::endl;
+      decode();
     }
     else if (syncCount == 2) {
       // second time sync is seen, start bit conversion
@@ -199,13 +201,15 @@ void handler() {
         received = false;
         syncIndex1 = 0;
         syncIndex2 = 0;
-
+        std::cout << "Decode 3" << std::endl;
+        decode();
       }
       else {
         received = true;
-
+        std::cout << "Decode 4" << std::endl;
+        decode();
       }
-    }*/
+    }
 
   }
 }
