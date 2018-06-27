@@ -55,69 +55,6 @@ bool isSync(unsigned int idx) {
 int syncM = 0;
 
 
-/* Interrupt 1 handler */
-void handler() {
-  static unsigned long duration = 0;
-  static unsigned long lastTime = 0;
-  static unsigned int ringIndex = 0;
-  static unsigned int syncCount = 0;
-
-  // ignore if we haven't processed the previous received signal
-  if (received == true) {
-    return;
-  }
-  // calculating timing since last change
-  long time = micros();
-  duration = time - lastTime;
-  lastTime = time;
-
-  // store data in ring buffer
-  ringIndex = (ringIndex + 1) % RING_BUFFER_SIZE;
-  timings[ringIndex] = duration;
-
-  // detect sync signal
-  if (isSync(ringIndex)) {
-    // syncCount ++k;
-    // printf("Sync global %d\n", ++syncM);
-    // printf("Sync local %d\n", syncCount);
-
-    std::cout << "Sync " << ++syncM << std::endl;
-
-    syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
-    received = true;
-
-    decode();
-/*
-    // first time sync is seen, record buffer index
-    if (syncCount == 1) {
-      syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
-      sync1 = true;
-    }
-    else if (syncCount == 2) {
-      // second time sync is seen, start bit conversion
-      sync2 = true;
-      syncCount = 0;
-      sync1 = false;
-      sync2 = false;
-      syncIndex2 = (ringIndex+1) % RING_BUFFER_SIZE;
-      unsigned int changeCount = (syncIndex2 < syncIndex1) ? (syncIndex2+RING_BUFFER_SIZE - syncIndex1) : (syncIndex2 - syncIndex1);
-      cc = changeCount;
-      // changeCount must be 66 -- 32 bits x 2 + 2 for sync
-      if (changeCount != 74 ) {
-        received = false;
-        syncIndex1 = 0;
-        syncIndex2 = 0;
-
-      }
-      else {
-        received = true;
-
-      }
-    }*/
-
-  }
-}
-
 void decode() {
   //Decoding Channels
   //Channel is write in the very first part of the first and second byte
@@ -187,6 +124,70 @@ void decode() {
   syncIndex1 = 0;
   received = false;
 }
+
+/* Interrupt 1 handler */
+void handler() {
+  static unsigned long duration = 0;
+  static unsigned long lastTime = 0;
+  static unsigned int ringIndex = 0;
+  static unsigned int syncCount = 0;
+
+  // ignore if we haven't processed the previous received signal
+  if (received == true) {
+    return;
+  }
+  // calculating timing since last change
+  long time = micros();
+  duration = time - lastTime;
+  lastTime = time;
+
+  // store data in ring buffer
+  ringIndex = (ringIndex + 1) % RING_BUFFER_SIZE;
+  timings[ringIndex] = duration;
+
+  // detect sync signal
+  if (isSync(ringIndex)) {
+    // syncCount ++k;
+    // printf("Sync global %d\n", ++syncM);
+    // printf("Sync local %d\n", syncCount);
+
+    std::cout << "Sync " << ++syncM << std::endl;
+
+    syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
+    received = true;
+
+    decode();
+/*
+    // first time sync is seen, record buffer index
+    if (syncCount == 1) {
+      syncIndex1 = (ringIndex+1) % RING_BUFFER_SIZE;
+      sync1 = true;
+    }
+    else if (syncCount == 2) {
+      // second time sync is seen, start bit conversion
+      sync2 = true;
+      syncCount = 0;
+      sync1 = false;
+      sync2 = false;
+      syncIndex2 = (ringIndex+1) % RING_BUFFER_SIZE;
+      unsigned int changeCount = (syncIndex2 < syncIndex1) ? (syncIndex2+RING_BUFFER_SIZE - syncIndex1) : (syncIndex2 - syncIndex1);
+      cc = changeCount;
+      // changeCount must be 66 -- 32 bits x 2 + 2 for sync
+      if (changeCount != 74 ) {
+        received = false;
+        syncIndex1 = 0;
+        syncIndex2 = 0;
+
+      }
+      else {
+        received = true;
+
+      }
+    }*/
+
+  }
+}
+
 
 
 
