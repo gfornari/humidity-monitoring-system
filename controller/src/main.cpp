@@ -73,9 +73,9 @@ int main(int argc, char** argv) {
     sq.createDataTable();
 
     wiringPiISR(DATAPIN,INT_EDGE_BOTH,&handler);
-    /*while(true) {
-      loop(sq);
-    }*/
+    while(true) {
+      // loop(sq);
+    }
 
 
     //oppure
