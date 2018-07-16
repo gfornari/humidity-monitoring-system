@@ -34,15 +34,11 @@ bool isInternetConnectionAvailable() {
   }
 }
 
-
 // detect if a sync signal is present
 bool isSync(unsigned int idx) {
   unsigned long t0 = timings[(idx+RING_BUFFER_SIZE-1) % RING_BUFFER_SIZE];
   unsigned long t1 = timings[idx];
 
-  // on the temperature sensor, the sync signal
-  // is roughtly 4.0ms. Accounting for error
-  // it should be within 3.0ms and 5.0ms
   if (t0>(SEP_LENGTH-100) && t0<(SEP_LENGTH+100) &&
     t1>(SYNC_LENGTH-1000) && t1<(SYNC_LENGTH+1000) &&
     digitalRead(DATAPIN) == HIGH) {
@@ -62,6 +58,7 @@ void handler() {
   if (received == true) {
     return;
   }
+
   // calculating timing since last change
   long time = micros();
   duration = time - lastTime;
@@ -74,7 +71,6 @@ void handler() {
   // detect sync signal
   if (isSync(ringIndex)) {
     syncCount ++;
-
 
     // first time sync is seen, record buffer index
     if (syncCount == 1) {
@@ -90,7 +86,7 @@ void handler() {
       syncIndex2 = (ringIndex+1) % RING_BUFFER_SIZE;
       unsigned int changeCount = (syncIndex2 < syncIndex1) ? (syncIndex2+RING_BUFFER_SIZE - syncIndex1) : (syncIndex2 - syncIndex1);
       cc = changeCount;
-      // changeCount must be 66 -- 32 bits x 2 + 2 for sync
+      // changeCount must be 74 -- 36 bits x 2 + 2 for sync
       if (changeCount != 74 ) {
         received = false;
         syncIndex1 = 0;
@@ -106,29 +102,23 @@ void handler() {
   }
 }
 
-
-
-
 //This function is used to convert duration stored in timings, in bit
 int t2b(unsigned int t0, unsigned int t1) {
- //Separation gap between two rising edge is 0.45ms
- if (t0>(SEP_LENGTH-100) && t0<(SEP_LENGTH+100)) {
-        //Bit 1 stay up around 1.9ms
-        if (t1>(BIT1_LENGTH-100) && t1<(BIT1_LENGTH+100)) {
-
-          return 1;
-        }
-        //Bit 1 stay up around 0.95ms
-        else if (t1>(BIT0_LENGTH-100) && t1<(BIT0_LENGTH+100)) {
-          return 0;
-        }
-        else {
-          return -1;
-        }
-      }
-      else {
-         return -1;
-      }
+  //Separation gap between two rising edge is 0.45ms
+  if (t0>(SEP_LENGTH-100) && t0<(SEP_LENGTH+100)) {
+    if (t1>(BIT1_LENGTH-100) && t1<(BIT1_LENGTH+100)) {
+      return 1;
+    }
+    else if (t1>(BIT0_LENGTH-100) && t1<(BIT0_LENGTH+100)) {
+      return 0;
+    }
+    else {
+      return -1;
+    }
+  }
+  else {
+      return -1;
+  }
 }
 
 
@@ -138,26 +128,6 @@ void loop(SqliteControllerAPI sq) {
     printf("Handler detached\n");
     // disable interrupt to avoid new data corrupting the buffer
     system("/usr/local/bin/gpio edge 2 none");
-
-
-// loop over buffer data ==> This is no longer needed, since now we want to print out the converted measure.
-//    int c=0;
-//    for(unsigned int i=syncIndex1,c =0; i!=syncIndex2; i=(i+2)%RING_BUFFER_SIZE,c++) {
-//      unsigned long t0 = timings[i], t1 = timings[(i+1)%RING_BUFFER_SIZE];
-//      if (t0>(SEP_LENGTH-100) && t0<(SEP_LENGTH+100)) {
-//       if (t1>(BIT1_LENGTH-100) && t1<(BIT1_LENGTH+100)) {
-//         Serial.print("1");
-//       } else if (t1>(BIT0_LENGTH-100) && t1<(BIT0_LENGTH+100)) {
-//         Serial.print("0");
-//       } else {
-//         Serial.print("SYNC");  // sync signal
-//       }
-//       } else {
-//       Serial.print("?");  // undefined timing
-//       }
-//       if (c%8==7) Serial.print(" ");
-//    }
-//    Serial.println("");
 
     //Decoding Channels
     //Channel is write in the very first part of the first and second byte
@@ -182,7 +152,6 @@ void loop(SqliteControllerAPI sq) {
       return;
     } else {
       printf("Channel: ");
-      //printf((int)(((channel)/8)-16)/2);
       printf("Channel: %d \n",(int)(((channel)/8)-16)/2);
     }
 
@@ -230,7 +199,6 @@ void loop(SqliteControllerAPI sq) {
       return;
     } else {
 	    printf("Temperature: %.6f C \n",(float)(temp)/10);
-      //printf("Temperature: %d C  %d F\n",(int)((temp-1024)/10+1.9+.5),(int)(((temp-1024)/10+1.
     }
 
     time_t timev;
@@ -268,7 +236,5 @@ void loop(SqliteControllerAPI sq) {
 
     // re-enable interrupt
     printf("Handler re-attached\n");
-    // Error in the original code
-    // wiringPiISR(DATAPIN,INT_EDGE_BOTH,&handler);
   }
 }

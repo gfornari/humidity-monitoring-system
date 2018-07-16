@@ -17,7 +17,6 @@ class Firebase {
       messagingSenderId: "516055515099",
     };
 
-    // TODO seems it is synchronous. Can we make it async?
     this.app = firebase.initializeApp(config);
   }
 

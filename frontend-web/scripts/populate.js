@@ -65,5 +65,4 @@ for (const b of BUILDINGS) {
 
 console.log(`Finish.`);
 
-// goOffline seems to not working. Leaving it here anyway
 firebase.database().goOffline();

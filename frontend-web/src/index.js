@@ -20,7 +20,7 @@ try {
 const buildings = ['cappellaborgoricco', 'oratoriocadoneghe'];
 const defaultBuilding = 0;
 
-// TODO: change these values with consistent ones
+// change these values with consistent ones
 const lowHumidityThreshold = 0;
 const upHumidityThreshold  = 75;
 const lowTemperatureThreshold = 244;
@@ -40,8 +40,8 @@ let eventsList = new EventsList('#events-list');
 
 buildingSelector.addChangeListener(() => {
   // event.detail is the actual MDCSelect object
-  sensorsChartHumidity = new SensorsChart('sensors-chart-humidity', buildings[/*event.detail.*/ buildingSelector.select.selectedIndex], 'humidity');
-  sensorsChartTemperature = new SensorsChart('sensors-chart-temperature', buildings[/*event.detail*/buildingSelector.select.selectedIndex], 'temperature');
+  sensorsChartHumidity = new SensorsChart('sensors-chart-humidity', buildings[buildingSelector.select.selectedIndex], 'humidity');
+  sensorsChartTemperature = new SensorsChart('sensors-chart-temperature', buildings[buildingSelector.select.selectedIndex], 'temperature');
 
   eventsList.deleteAllEvents();
   eventsList = new EventsList('#events-list');
@@ -49,7 +49,6 @@ buildingSelector.addChangeListener(() => {
 });
 
 
-// TODO damn ugly. Really, it should be improved.
 function handleChartsData(buildingId) {
   db.getBuildingMeasurementsSince(buildingId, 7, 'days').then((qs) => {
     if (qs.empty) {
