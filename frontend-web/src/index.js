@@ -17,7 +17,7 @@ try {
   console.error(e);
 }
 
-const buildings = ['cappellaborgoricco', 'oratoriocadoneghe'];
+const buildings = ['PalaGiorgione', 'cappellaborgoricco', 'oratoriocadoneghe'];
 const defaultBuilding = 0;
 
 // change these values with consistent ones
